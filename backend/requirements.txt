@@ -1,0 +1,8 @@
+MetaTrader5
+requests
+websockets
+asyncio
+fastapi
+asyncpg
+uvicorn
+psycopg2
