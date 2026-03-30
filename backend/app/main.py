@@ -5,3 +5,7 @@ from app.replay.ws import router as replay_router
 app = FastAPI()
 
 app.include_router(replay_router)
+
+@app.get("/")
+def root():
+    return {"status": "running"}
