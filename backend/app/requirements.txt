@@ -1,4 +1,3 @@
-MetaTrader5
 requests
 websockets
 asyncio
