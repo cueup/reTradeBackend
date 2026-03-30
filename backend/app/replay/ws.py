@@ -7,4 +7,11 @@ router = APIRouter()
 @router.websocket("/ws/replay")
 async def replay_ws(ws: WebSocket):
     await ws.accept()
-    await start_replay(ws)
+    print("Client connected")
+
+    try:
+        await start_replay(ws)
+    except Exception as e:
+        print("WebSocket error:", e)
+    finally:
+        print("Client disconnected")

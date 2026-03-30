@@ -17,11 +17,9 @@ async def fetch_candles(pool, symbol, start):
     query = """
         SELECT timestamp, open, high, low, close
         FROM candles
-        WHERE symbol=$1 AND timestamp >= $2
-        ORDER BY timestamp
-        LIMIT 500
+        
     """
-
+    print(f"Fetched {len(rows)} candles") # type: ignore
     async with pool.acquire() as conn:
         return await conn.fetch(query, symbol, start)
 
@@ -44,6 +42,8 @@ async def start_replay(ws):
                 datetime.fromisoformat(msg["start_time"])
             )
 
+            session.playing = True
+
             asyncio.create_task(run_loop(ws, session, pool, buffer))
 
         elif msg["action"] == "play":
@@ -58,29 +58,34 @@ async def start_replay(ws):
 
 async def run_loop(ws, session, pool, buffer):
 
-    while True:
+    try:
+        while True:
 
-        if not session.playing:
-            await asyncio.sleep(0.1)
-            continue
+            if not session.playing:
+                await asyncio.sleep(0.1)
+                continue
 
-        if len(buffer) < 50:
-            rows = await fetch_candles(pool, session.symbol, session.current_time)
-            buffer.extend(rows)
+            if len(buffer) < 50:
+                rows = await fetch_candles(pool, session.symbol, session.current_time)
+                buffer.extend(rows)
 
-        if not buffer:
-            await ws.send_json({"type": "end"})
-            break
+            if not buffer:
+                await ws.send_json({"type": "end"})
+                break
 
-        candle = buffer.pop(0)
-        session.current_time = candle["timestamp"]
+            candle = buffer.pop(0)
+            session.current_time = candle["timestamp"]
 
-        await ws.send_json({
-            "t": candle["timestamp"].isoformat(),
-            "o": candle["open"],
-            "h": candle["high"],
-            "l": candle["low"],
-            "c": candle["close"]
-        })
+            await ws.send_json({
+                "t": candle["timestamp"].isoformat(),
+                "o": float(candle["open"]),
+                "h": float(candle["high"]),
+                "l": float(candle["low"]),
+                "c": float(candle["close"])
+            })
 
-        await asyncio.sleep(1 / session.speed)
+            await asyncio.sleep(1 / session.speed)
+
+    except Exception as e:
+        print("Replay loop crashed:", e)
+        await ws.close()
