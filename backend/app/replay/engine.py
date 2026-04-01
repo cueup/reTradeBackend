@@ -17,11 +17,14 @@ async def fetch_candles(pool, symbol, start):
     query = """
         SELECT timestamp, open, high, low, close
         FROM candles
-        
+        WHERE symbol=$1 AND timestamp >= $2
+        ORDER BY timestamp
+        LIMIT 500
     """
-    print(f"Fetched {len(rows)} candles") # type: ignore
     async with pool.acquire() as conn:
-        return await conn.fetch(query, symbol, start)
+        rows = await conn.fetch(query, symbol, start)
+    print(f"Fetched {len(rows)} candles")
+    return rows
 
 
 async def start_replay(ws):
