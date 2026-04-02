@@ -6,6 +6,6 @@
     "COPY ./ /usr/src/app",
     "RUN pip install --no-cache-dir -r backend/requirements.txt",
     "WORKDIR /usr/src/app/backend",
-    "CMD [\"uvicorn\", \"main:app\"]"
+    "CMD [\"uvicorn\", \"app.main:app\"]"
   ]
 }
