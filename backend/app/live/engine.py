@@ -1,9 +1,9 @@
 import asyncio
-from app.db import get_db_pool
+from app.db import get_db
 
 async def live_stream(ws, symbol):
 
-    pool = await get_db_pool()
+    pool = await get_db()
     last_ts = None
 
     while True:

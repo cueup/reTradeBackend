@@ -1,6 +1,5 @@
 from fastapi import APIRouter, WebSocket
 from app.live.engine import live_stream
-from backend.app.replay.engine import start_replay
 
 router = APIRouter()
 
@@ -10,7 +9,7 @@ async def live_ws(ws: WebSocket):
     print("Client connected")
 
     try:
-        await start_replay(ws)
+        await live_stream(ws)
     except Exception as e:
         print("WebSocket error:", e)
     finally:
