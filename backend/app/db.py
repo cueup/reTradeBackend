@@ -10,6 +10,6 @@ async def get_db():
         database="market_data_db",
         user="postgres",
         password="uLKjNalzwsmblGQ6",
-        host="srv-captain--timescaledb",
-        port=5432
+        host="18.168.84.114",
+        port=6543
     )
