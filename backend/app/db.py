@@ -11,5 +11,5 @@ async def get_db():
         user="postgres",
         password="uLKjNalzwsmblGQ6",
         host="srv-captain--timescaledb",
-        port=6543
+        port=5432
     )
