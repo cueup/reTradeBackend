@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "dockerfileLines": [
-    "FROM python:3.11.15-trixie",
+    "FROM python:3.14.3-slim",
     "WORKDIR /usr/src/app",
     "COPY ./ /usr/src/app",
     "RUN pip install --no-cache-dir -r backend/requirements.txt",
