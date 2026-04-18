@@ -8,11 +8,12 @@ async def live_ws(ws: WebSocket):
     await ws.accept()
     print("Client connected")
 
-    while True:
-        msg = await ws.receive_json()
+    try:
+        await live_stream(ws)
+    except Exception as e:
+        print("WebSocket error:", e)
+    finally:
+        print("Client disconnected")
 
-        if msg["action"] == "subscribe":
-            symbol = msg["symbol"]
-
-            print(f"Subscribing to {symbol}")
-        await live_stream(ws, symbol)
+    symbol = "EURUSD"  # later from client
+    await live_stream(ws, symbol)
