@@ -6,10 +6,9 @@ from app.db import get_db
 
 app = FastAPI()
 
-@app.lifespan("startup")
-async def startup():
+@app.on_event("startup")
+async def startup_event():
     await get_db()
-    print("Database connection pool created")
 
 app.include_router(replay_router)
 app.include_router(live_router)
